@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>プロジェクトみかず — 作戦記録 №0803</title>
+<meta property="og:title" content="プロジェクトみかず" />
+<meta property="og:description" content="これは彼が最強のアルファツイッタラーを目指す物語…" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bez: cubic-bezier(0.87, 0.05, 0.02, 0.97);
+  --pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --bg: #0b0d10;
+  --card: #16181c;
+  --line: #2f3336;
+  --steel: #2a3140;
+  --blue: #1d9bf2;
+  --blue-dim: #0e5a8c;
+  --like: #f91880;
+  --rt: #00ba7c;
+  --alert: #ff3b30;
+  --alert-deep: #7a120d;
+  --cyan: #2de2ff;
+  --fg: #e7e9ea;
+  --dim: #71767b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN", "Yu Gothic", "YuGothic", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "palt" 1, "kern" 1;
+  line-break: strict;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
+.mono { font-family: "SF Mono", "Menlo", "Consolas", "Courier New", monospace; }
+.serif { font-family: "Hiragino Mincho ProN", "ヒラギノ明朝 ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif; }
+
+.stage { position: fixed; inset: 0; overflow: hidden; }
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 72px);
+  pointer-events: none;
+}
+
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  z-index: 70;
+}
+
+.rain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15ch;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 2.1;
+  letter-spacing: 0.1em;
+  color: var(--blue);
+  opacity: 0.12;
+  pointer-events: none;
+  user-select: none;
+}
+.rain--l { left: 16px; }
+.rain--r { right: 16px; text-align: right; }
+.rain > div { animation: rainY 10s linear infinite; }
+.rain--r > div { animation-duration: 13s; animation-direction: reverse; }
+@keyframes rainY { to { transform: translateY(-50%); } }
+
+.sweep-bg {
+  position: absolute;
+  inset: -30%;
+  background: conic-gradient(from 0deg, transparent 0 82%, rgba(29,155,242,0.06) 92%, transparent 100%);
+  animation: rot 14s linear infinite;
+  pointer-events: none;
+}
+@keyframes rot { to { transform: rotate(360deg); } }
+
+.corner { position: absolute; width: 26px; height: 26px; border: 2px solid var(--blue-dim); z-index: 50; animation: cornerPulse 2.4s ease-in-out infinite; }
+.c1 { top: 26px; left: 14px; border-right: 0; border-bottom: 0; }
+.c2 { top: 26px; right: 14px; border-left: 0; border-bottom: 0; }
+.c3 { bottom: 26px; left: 14px; border-right: 0; border-top: 0; }
+.c4 { bottom: 26px; right: 14px; border-left: 0; border-top: 0; }
+@keyframes cornerPulse { 0%, 100% { border-color: var(--blue-dim); } 50% { border-color: var(--blue); } }
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  text-align: center;
+  z-index: 10;
+}
+
+@keyframes appear { to { opacity: 1; } }
+@keyframes vanish { to { opacity: 0; visibility: hidden; } }
+
+.boot { opacity: 1; animation: vanish 0.01s linear 6.6s forwards; }
+.brief { animation: appear 0.01s linear 6.6s both, vanish 0.01s linear 14.3s forwards; }
+.lock { animation: appear 0.01s linear 14.3s both, vanish 0.01s linear 22.2s forwards; }
+.exec { animation: appear 0.01s linear 22.2s both, vanish 0.01s linear 29.95s forwards; }
+.final { animation: appear 0.01s linear 29.95s both; }
+
+.exec .narr span:nth-child(1) { --d: 22.7s; }
+.exec .narr span:nth-child(2) { --d: 24.0s; }
+.exec .narr span:nth-child(3) { --d: 25.3s; }
+.exec .narr span:nth-child(4) { --d: 26.6s; }
+
+.narr {
+  font-size: clamp(17px, 3.4vmin, 30px);
+  font-weight: 500;
+  line-height: 2.3;
+  letter-spacing: 0.22em;
+  color: #ccd1dc;
+}
+.narr span {
+  display: block;
+  opacity: 0;
+  animation: narrIn 1.3s var(--bez) var(--d, 0s) both;
+}
+.narr span:nth-child(1) { --d: 0.5s; }
+.narr span:nth-child(2) { --d: 1.8s; }
+.narr span:nth-child(3) { --d: 3.1s; }
+.narr em { font-style: normal; color: var(--blue); }
+@keyframes narrIn {
+  from { opacity: 0; transform: translateY(22px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.5em;
+  color: var(--blue);
+  margin-bottom: clamp(16px, 3vmin, 30px);
+  opacity: 0;
+  animation: rowIn 0.5s var(--bez) 7.1s both;
+}
+@keyframes rowIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+
+.tweet-card {
+  width: min(560px, 88vw);
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(16px, 3vmin, 24px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(29,155,242,0.08);
+  opacity: 0;
+  animation: cardIn 0.65s var(--bez) 7.3s both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(70px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.tc-head { display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), #0c3d63);
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  flex: none;
+  animation: popIn 0.45s var(--pop) 7.65s both;
+}
+@keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+
+.tc-name { line-height: 1.35; opacity: 0; animation: rowIn 0.4s var(--bez) 7.75s both; }
+.tc-name b { display: flex; align-items: center; gap: 6px; font-size: 16px; }
+.tc-name .handle { font-size: 13px; color: var(--dim); font-weight: 400; }
+
+.badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-size: 11px;
+  display: grid;
+  place-items: center;
+  animation: popIn 0.4s var(--pop) 8.0s both;
+}
+
+.tc-body { margin-top: 14px; font-size: clamp(15px, 2.3vmin, 19px); line-height: 1.8; letter-spacing: 0.04em; }
+.tc-body p {
+  clip-path: inset(0 100% 0 0);
+  animation: wipeText 0.9s var(--bez) var(--d, 0s) both;
+}
+.tc-body p:nth-child(1) { --d: 8.2s; }
+.tc-body p:nth-child(2) { --d: 8.8s; }
+.tc-body p:nth-child(3) { --d: 9.4s; }
+.tc-body p:nth-child(4) { --d: 10.0s; }
+.tc-body p:nth-child(5) { --d: 10.6s; color: var(--blue); }
+@keyframes wipeText { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+.tc-time { margin-top: 12px; font-size: 13px; color: var(--dim); opacity: 0; animation: appear 0.4s linear 11.7s both; }
+
+.tc-foot {
+  display: flex;
+  gap: clamp(24px, 6vmin, 64px);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--dim);
+}
+.tc-foot span { display: flex; align-items: center; gap: 8px; opacity: 0; animation: popIn 0.4s var(--pop) var(--d, 0s) both; }
+.tc-foot span:nth-child(1) { --d: 11.85s; }
+.tc-foot span:nth-child(2) { --d: 12.0s; color: var(--rt); }
+.tc-foot span:nth-child(3) { --d: 12.15s; color: var(--like); }
+.tc-foot i { font-style: normal; }
+
+.like-anchor { position: relative; }
+.like-anchor i { display: inline-block; animation: likePop 0.6s var(--pop) 12.45s both; }
+@keyframes likePop {
+  0% { transform: scale(1); }
+  30% { transform: scale(0); }
+  60% { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+.like-burst {
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 10px;
+  height: 10px;
+  translate: -50% -50%;
+  border: 3px solid var(--like);
+  border-radius: 50%;
+  opacity: 0;
+  animation: burst 0.6s ease-out 12.55s both;
+  pointer-events: none;
+}
+@keyframes burst {
+  0% { opacity: 0.9; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(5); }
+}
+
+.scope { position: relative; width: clamp(210px, 46vmin, 420px); aspect-ratio: 1; }
+.bird {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  font-size: clamp(26px, 6vmin, 56px);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: var(--blue);
+  text-shadow: 0 0 26px rgba(29,155,242,0.6);
+  opacity: 0;
+  animation:
+    appear 0.6s linear 14.8s both,
+    hover 2.4s ease-in-out 14.8s infinite,
+    sad 0.6s var(--bez) 16.7s both;
+}
+.bird i {
+  display: inline-block;
+  font-style: normal;
+  animation: quiver 0.16s linear 16.8s infinite;
+}
+@keyframes sad {
+  30% { transform: scale(0.96) rotate(1deg); }
+  to {
+    transform: scale(0.84) rotate(-6deg);
+    color: #76808d;
+    text-shadow: 0 0 8px rgba(29,155,242,0.12);
+  }
+}
+@keyframes quiver {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1.5px, -1px); }
+  50% { transform: translate(-1.5px, 1px); }
+  75% { transform: translate(1px, 1.5px); }
+}
+@keyframes hover {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -14px; }
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--blue);
+  border-radius: 50%;
+  animation: converge 0.7s var(--bez) 15.7s both;
+}
+.ring--in { inset: 18%; border-color: rgba(29,155,242,0.5); animation-delay: 15.85s; }
+@keyframes converge { from { transform: scale(2.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.echo {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--blue);
+  border-radius: 50%;
+  opacity: 0;
+  animation: echo 1.6s ease-out var(--d, 0s) infinite;
+}
+.echo:nth-of-type(1) { --d: 16.1s; }
+.echo:nth-of-type(2) { --d: 16.9s; }
+@keyframes echo {
+  0% { transform: scale(0.3); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.dashes {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  border: 2px dashed rgba(29,155,242,0.55);
+  opacity: 0;
+  animation: appear 0.3s linear 16.0s both, rot 9s linear 16.0s infinite reverse;
+}
+
+.cross-h, .cross-v { position: absolute; background: var(--blue); opacity: 0; animation: appear 0.25s linear 16.2s both; }
+.cross-h { top: 50%; left: -10%; right: -10%; height: 1px; }
+.cross-v { left: 50%; top: -10%; bottom: -10%; width: 1px; }
+
+.coords {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  margin-top: clamp(20px, 4vmin, 34px);
+  font-size: clamp(15px, 2.7vmin, 24px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 2.1;
+  color: #aab1bd;
+  white-space: nowrap;
+}
+.coords div { opacity: 0; animation: narrIn 1.3s var(--bez) var(--d, 0s) both; }
+.coords div:nth-child(2) { color: #8d95a3; }
+.coords div:nth-child(1) { --d: 17.4s; }
+.coords div:nth-child(2) { --d: 18.8s; }
+
+.locked {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  padding: 0.3em 0.9em;
+  background: var(--alert);
+  color: #fff;
+  font-size: clamp(18px, 4vmin, 36px);
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  animation: stampS 0.35s var(--bez) 16.6s both, blink 0.55s steps(1) 16.95s 3;
+  box-shadow: 0 0 30px rgba(255,59,48,0.7);
+}
+@keyframes stampS {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.1; } }
+
+.vig {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 160px rgba(255,59,48,0.6);
+  opacity: 0;
+  animation: blink 0.55s steps(1) 16.6s 3 both;
+}
+
+.final-inner { position: relative; }
+
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(340px, 80vmin, 760px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background:
+    radial-gradient(circle, rgba(29,155,242,0.14) 0%, transparent 62%),
+    conic-gradient(from 0deg, transparent 0 40%, rgba(29,155,242,0.22) 50%, transparent 60%, transparent 88%, rgba(29,155,242,0.16) 95%, transparent 100%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: appear 0.8s linear 30.45s both, rot 7s linear 30.45s infinite;
+  pointer-events: none;
+}
+
+.compose {
+  position: relative;
+  width: min(560px, 88vw);
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(16px, 3vmin, 24px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(29,155,242,0.12);
+  opacity: 0;
+  animation: cardIn 0.65s var(--bez) 30.5s both;
+}
+
+.cp-body { display: flex; gap: 12px; }
+.cp-body .avatar { animation-delay: 30.95s; }
+.cp-text { flex: 1; font-size: clamp(15px, 2.3vmin, 19px); line-height: 1.8; }
+.cp-text p {
+  clip-path: inset(0 100% 0 0);
+  animation: wipeText 0.5s var(--bez) var(--d, 0s) both;
+}
+.cp-text p:nth-child(1) { --d: 31.15s; }
+.cp-text p:nth-child(2) { --d: 31.45s; font-size: 0.82em; color: var(--blue); word-break: break-all; }
+
+.cp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.char-ring {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: conic-gradient(var(--blue) 0 14%, var(--line) 14% 100%);
+  position: relative;
+  opacity: 0;
+  animation: appear 0.4s linear 31.8s both;
+}
+.char-ring::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.tweet-wrap {
+  position: relative;
+  display: inline-block;
+  filter: drop-shadow(0 0 14px rgba(29,155,242,0.45));
+  animation: glowPulse 1.8s ease-in-out 32.6s infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(29,155,242,0.4)); }
+  50% { filter: drop-shadow(0 0 30px rgba(29,155,242,0.85)); }
+}
+
+.tweet {
+  display: inline-block;
+  padding: 14px 38px;
+  background: var(--blue);
+  color: #fff;
+  font-size: clamp(15px, 2.4vmin, 18px);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  border-radius: 9999px;
+  opacity: 0;
+  animation: btnIn 0.55s var(--pop) 32.0s both;
+  transition: transform 0.18s var(--pop), background 0.18s linear;
+}
+.tweet:hover { transform: translateY(-3px) scale(1.06); background: #4db5ff; }
+.tweet:active { transform: translateY(0) scale(0.96); }
+.tweet:focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+@keyframes btnIn {
+  0% { opacity: 0; transform: translateY(40px) scale(0.6); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.replay {
+  display: block;
+  margin: 26px auto 0;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  color: var(--dim);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-indent: 0.25em;
+  padding: 10px 26px;
+  cursor: pointer;
+  opacity: 0;
+  animation: appear 0.5s linear 32.5s both;
+  transition: color 0.15s, border-color 0.15s;
+}
+.replay:hover { color: var(--blue); border-color: var(--blue); }
+
+.fly {
+  position: absolute;
+  bottom: -48px;
+  font-size: clamp(18px, 3.4vmin, 32px);
+  opacity: 0;
+  animation: fly 5s linear var(--d, 0s) infinite;
+}
+.fly:nth-of-type(1) { left: 8%; --d: 32.0s; }
+.fly:nth-of-type(2) { left: 20%; --d: 32.9s; font-size: clamp(14px, 2.6vmin, 24px); }
+.fly:nth-of-type(3) { left: 36%; --d: 32.4s; }
+.fly:nth-of-type(4) { left: 58%; --d: 33.3s; }
+.fly:nth-of-type(5) { left: 74%; --d: 32.2s; font-size: clamp(14px, 2.6vmin, 24px); }
+.fly:nth-of-type(6) { left: 88%; --d: 32.7s; }
+@keyframes fly {
+  0% { opacity: 0; transform: translateY(0) rotate(-8deg); }
+  10% { opacity: 0.9; }
+  50% { transform: translateY(-46vh) rotate(8deg); }
+  85% { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-94vh) rotate(-6deg); }
+}
+
+.ov { position: absolute; inset: 0; pointer-events: none; z-index: 30; }
+
+.ov-tilt {
+  position: absolute;
+  inset: -22%;
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  transform: rotate(-7deg);
+}
+.ov-tilt i { position: relative; overflow: hidden; }
+.ov-tilt i::before, .ov-tilt i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-101%);
+}
+
+.ovA .ov-tilt i::before { background: var(--steel); animation: inR 0.5s var(--bez) calc(5.6s + var(--d)) both, outR 0.5s var(--bez) calc(6.7s + var(--d)) forwards; }
+.ovA .ov-tilt i::after { background: var(--blue); animation: inR 0.5s var(--bez) calc(5.72s + var(--d)) both, outR 0.5s var(--bez) calc(6.82s + var(--d)) forwards; }
+.ovA .ov-tilt i:nth-child(even)::before, .ovA .ov-tilt i:nth-child(even)::after { animation-name: inL, outL; }
+
+.ovC .ov-tilt { transform: rotate(6deg); }
+.ovC .ov-tilt i::before { background: var(--alert-deep); animation: inR 0.45s var(--bez) calc(21.3s + var(--d)) both, outR 0.45s var(--bez) calc(22.52s + var(--d)) forwards; }
+.ovC .ov-tilt i::after {
+  background: repeating-linear-gradient(45deg, var(--blue) 0 26px, #0b0d10 26px 52px);
+  animation: inR 0.45s var(--bez) calc(21.42s + var(--d)) both, outR 0.45s var(--bez) calc(22.64s + var(--d)) forwards;
+}
+.ovC .ov-tilt i:nth-child(even)::before, .ovC .ov-tilt i:nth-child(even)::after { animation-name: inL, outL; }
+
+.ov-tilt i:nth-child(1) { --d: 0.08s; }
+.ov-tilt i:nth-child(2) { --d: 0.22s; }
+.ov-tilt i:nth-child(3) { --d: 0s; }
+.ov-tilt i:nth-child(4) { --d: 0.27s; }
+.ov-tilt i:nth-child(5) { --d: 0.13s; }
+.ov-tilt i:nth-child(6) { --d: 0.3s; }
+.ov-tilt i:nth-child(7) { --d: 0.05s; }
+
+@keyframes inR { from { transform: translateX(-101%); } to { transform: translateX(0); } }
+@keyframes outR { from { transform: translateX(0); } to { transform: translateX(101%); } }
+@keyframes inL { from { transform: translateX(101%); } to { transform: translateX(0); } }
+@keyframes outL { from { transform: translateX(0); } to { transform: translateX(-101%); } }
+
+.ovB { --skew: 18%; }
+.ovB span {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 0, calc(var(--skew) * -1) 100%, calc(var(--skew) * -1) 100%);
+}
+.ovB span:nth-child(1) { background: var(--steel); animation: wipeIn 0.55s var(--bez) 13.5s both, wipeOut 0.55s var(--bez) 14.55s forwards; }
+.ovB span:nth-child(2) { background: var(--cyan); animation: wipeIn 0.55s var(--bez) 13.6s both, wipeOut 0.55s var(--bez) 14.65s forwards; }
+.ovB span:nth-child(3) { background: var(--blue); animation: wipeIn 0.55s var(--bez) 13.72s both, wipeOut 0.55s var(--bez) 14.77s forwards; }
+
+@keyframes wipeIn {
+  from { clip-path: polygon(0 0, 0 0, calc(var(--skew) * -1) 100%, calc(var(--skew) * -1) 100%); }
+  to { clip-path: polygon(0 0, calc(100% + var(--skew)) 0, 100% 100%, calc(var(--skew) * -1) 100%); }
+}
+@keyframes wipeOut {
+  from { clip-path: polygon(0 0, calc(100% + var(--skew)) 0, 100% 100%, calc(var(--skew) * -1) 100%); }
+  to { clip-path: polygon(calc(100% + var(--skew)) 0, calc(100% + var(--skew)) 0, 100% 100%, 100% 100%); }
+}
+
+.ovH { display: grid; place-items: center; }
+.heartT {
+  position: absolute;
+  width: 14vmax;
+  aspect-ratio: 1;
+  transform: rotate(45deg) scale(0);
+}
+.heartT::before, .heartT::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+}
+.heartT::before { left: -50%; }
+.heartT::after { top: -50%; }
+.heartT:nth-child(1) { background: var(--like); animation: heartIn 0.6s var(--pop) 29.1s both, heartOut 0.55s var(--bez) 30.25s forwards; }
+.heartT:nth-child(2) { background: #fff; animation: heartIn 0.6s var(--pop) 29.2s both, heartOut 0.55s var(--bez) 30.35s forwards; }
+.heartT:nth-child(3) { background: var(--blue); animation: heartIn 0.6s var(--pop) 29.32s both, heartOut 0.55s var(--bez) 30.47s forwards; }
+@keyframes heartIn { from { transform: rotate(45deg) scale(0); } to { transform: rotate(45deg) scale(16); } }
+@keyframes heartOut { from { transform: rotate(45deg) scale(16); } to { transform: rotate(45deg) scale(0); } }
+
+.hud { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.1); z-index: 50; }
+.hud::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--blue-dim), var(--blue));
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: prog 29.95s linear 0s forwards;
+}
+@keyframes prog { to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage *, .stage *::before, .stage *::after { animation: none !important; }
+  .scene { opacity: 0; visibility: hidden; }
+  .final { opacity: 1; visibility: visible; }
+  .final * { opacity: 1; transform: none; clip-path: none; }
+  .rain, .sweep-bg, .heartT { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="sweep-bg"></div>
+  <div class="rain rain--l">
+    <div><pre>❤ 114,514
+🔁 8,100
+💬 810
+👁 1,919,810
+❤ +1
+🔁 +1
+⭐ 保存済み
+📈 トレンド入り
+❤ 114,514
+🔁 8,100
+💬 810
+👁 1,919,810
+❤ +1
+🔁 +1
+⭐ 保存済み
+📈 トレンド入り</pre></div>
+  </div>
+  <div class="rain rain--r">
+    <div><pre>@yu_ さんが
+ポストしました
+通知 99+
+新しいフォロワー
+インプレッション
+急上昇中 ↑
+バズ検知
+拡散率 810%
+@yu_ さんが
+ポストしました
+通知 99+
+新しいフォロワー
+インプレッション
+急上昇中 ↑
+バズ検知
+拡散率 810%</pre></div>
+  </div>
+
+  <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
+
+  <section class="scene boot">
+    <div>
+      <p class="narr serif">
+        <span>これは彼が</span>
+        <span><em>最強のアルファツイッタラー</em>を</span>
+        <span>目指す物語…</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="scene brief">
+    <div>
+      <p class="eyebrow">// 作戦概要 — 02</p>
+      <div class="tweet-card">
+        <div class="tc-head">
+          <div class="avatar">🐱</div>
+          <div class="tc-name">
+            <b>みかずプロジェクト <span class="badge">✓</span></b>
+            <span class="handle">@project_mikazu</span>
+          </div>
+        </div>
+        <div class="tc-body">
+          <p>極秘作戦「みかず」、始動。</p>
+          <p>作戦目標：送信ボタンの押下</p>
+          <p>どんな恋愛もうまくいかない</p>
+          <p>そんな彼を救いたい</p>
+          <p>#プロジェクトみかず</p>
+        </div>
+        <p class="tc-time">午前8:03 · 2026/06/12 · <b style="color:var(--blue)">810万</b> 件の表示</p>
+        <div class="tc-foot">
+          <span>💬 <i>810</i></span>
+          <span>🔁 <i>8,100</i></span>
+          <span class="like-anchor"><i>❤️</i> <i>114,514</i><b class="like-burst"></b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene lock">
+    <div class="vig"></div>
+    <div class="scope">
+      <i class="echo"></i>
+      <i class="echo"></i>
+      <span class="bird"><i>ツイナオン</i></span>
+      <i class="ring"></i>
+      <i class="ring ring--in"></i>
+      <i class="dashes"></i>
+      <i class="cross-h"></i>
+      <i class="cross-v"></i>
+      <div class="locked">目標捕捉</div>
+      <div class="coords serif">
+        <div>モテていると自認している彼は</div>
+        <div>きっと幸せなんだろう…</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene exec">
+    <div>
+      <p class="narr serif">
+        <span>晒し芸と晒され芸</span>
+        <span>両方を併せ持つ彼は</span>
+        <span>道頓堀に置いて行かれた日</span>
+        <span><em>現実</em>をしった</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="scene final">
+    <div class="final-inner">
+      <div class="glow"></div>
+      <div class="compose">
+        <div class="cp-body">
+          <div class="avatar">🐱</div>
+          <div class="cp-text">
+            <p>プロジェクトみかず<span id="emojiSlot">🐱</span></p>
+            <p class="mono">x.com/yu_/status/2064708490745291208/photo/1</p>
+          </div>
+        </div>
+        <div class="cp-foot">
+          <i class="char-ring"></i>
+          <span class="tweet-wrap">
+            <a class="tweet" id="tweetBtn" href="#" target="_blank" rel="noopener">ツイートする</a>
+          </span>
+        </div>
+      </div>
+      <button class="replay" onclick="location.reload()">もう一度見る</button>
+    </div>
+    <span class="fly">❤️</span><span class="fly">🔁</span><span class="fly">⭐</span><span class="fly">❤️</span><span class="fly">💬</span><span class="fly">📈</span>
+  </section>
+
+  <div class="ov ovA"><div class="ov-tilt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="ov ovB"><span></span><span></span><span></span></div>
+  <div class="ov ovC"><div class="ov-tilt"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="ov ovH"><i class="heartT"></i><i class="heartT"></i><i class="heartT"></i></div>
+  <div class="hud"></div>
+
+</div>
+<script>
+(function () {
+  var emojis = ["🐱","🚀","🛰️","🔥","⚡","🎯","🌙","💥","🫡","📡","🗼","🌀","🕶️","💣","🐈‍⬛","✨"];
+  var e = emojis[Math.floor(Math.random() * emojis.length)];
+  var text = "プロジェクトみかず" + e + "\nhttps://x.com/yu_/status/2064708490745291208/photo/1";
+  document.getElementById("emojiSlot").textContent = e;
+  document.getElementById("tweetBtn").href =
+    "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text);
+})();
+</script>
+</body>
+</html>
